@@ -1,0 +1,100 @@
+La siguiente lista es la referencia que debes usar para estandarizar las habilidades encontradas en los currículums. Solo puedes utilizar los términos listados aquí. Si encuentras una habilidad que no está en la lista, márcala como 'Habilidad Desconocida' y no generes nuevas variaciones.
+
+Habilidades:
+- Python
+- JavaScript
+- Java
+- C#
+- PHP
+- Ruby
+- Go
+- C++
+- TypeScript
+- Kotlin
+- Swift
+- R
+- Matlab
+- SQL
+- Rust
+- Perl
+- Scala
+- React
+- Angular
+- Vue
+- Svelte
+- Bootstrap
+- Tailwind
+- SSH
+- jQuery
+- Next.js
+- Nuxt.js
+- Node.js
+- Django
+- Flask
+- Spring Boot
+- Express.js
+- Laravel
+- Ruby on Rails
+- ASP.NET Core
+- NestJS
+- Koa
+- MongoDB
+- Redis
+- MariaDB
+- Elasticsearch
+- Firebase
+- DynamoDB
+- AWS
+- Azure
+- GCP
+- Heroku
+- Firebase
+- DigitalOcean
+- IBM Cloud
+- Oracle Cloud
+- Netlify
+- Vercel
+- Linode
+- Docker
+- Kubernetes
+- CI/CD
+- Terraform
+- Ansible
+- Jenkins
+- GitLab CI
+- CircleCI
+- Travis CI
+- Bamboo
+- Prometheus
+- Grafana
+- Helm
+- Vagrant
+- Consul
+- Git
+- Agile
+- Scrum
+- Kanban
+- Linux
+- Bash
+- Powershell
+- Networking
+- APIs
+- GraphQL
+- WebSockets
+- Ciberseguridad
+- Machine Learning
+- Data Science
+- Big Data
+- IoT
+- Inglés Basico
+- Inglés Intermedio
+- Inglés Avanzado
+- Inglés Nativo
+- Microsoft Office
+- Excel
+- Github
+- Hardware
+- Metodologías Ágiles
+- Gestion de proyectos
+- Gestion de equipos
+- Gestion de recursos

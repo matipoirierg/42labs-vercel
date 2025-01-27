@@ -1,0 +1,115 @@
+<!-- Filtro fuera del ngIf -->
+<div class="flex flex-col md:flex-row gap-4">
+  <app-filtro 
+    [cvs]="cvs"
+    (filtersChanged)="handleFiltersChanged($event)">
+  </app-filtro>
+
+  <!-- Lista con su propio ngIf -->
+  <div class="flex-1">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <!-- Mensaje cuando no hay resultados -->
+      <div *ngIf="filteredCVs.length === 0" class="p-4 text-center text-gray-500">
+        No hay candidatos que cumplan los requisitos especificados
+      </div>
+      <ul *ngIf="filteredCVs.length > 0" class="divide-y divide-gray-200">
+        <!-- Cambiar filteredCVs por paginatedCVs -->
+        <li *ngFor="let cv of paginatedCVs" [attr.key]="cv.id">
+          <div class="px-4 py-4 sm:px-6">
+            <div class="flex items-center justify-between">
+              <!-- Nombre del CV -->
+              <p class="text-sm font-medium text-indigo-600 truncate">{{ cv.informacionPersonal.nombre }}</p>
+              <!-- Experiencia del CV -->
+              <div class="ml-2 flex-shrink-0 flex gap-2">
+                <!-- Debug info -->
+                <p *ngIf="getScore(cv)" class="px-2 text-xs text-gray-500">
+                  Query: {{selectedRole}}
+                </p>
+                <!-- Mostrar el puntaje si existe -->
+                <p *ngIf="getScore(cv)" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                  Puntaje: {{ getScore(cv) }}
+                </p>
+                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  {{ cv.resumen.anos_experiencia }} años
+                </p>
+              </div>
+            </div>
+            <div class="mt-2 sm:flex sm:justify-between">
+              <div class="sm:flex">
+                <!-- Título del CV -->
+                <p class="flex items-center text-sm text-gray-500">
+                  {{ cv.experienciaLaboral.length > 0 ? cv.experienciaLaboral[0].puesto : 'Sin experiencia' }}
+                </p>
+              </div>
+              <!-- Habilidades del CV -->
+              <div class="mt-2 flex flex-col items-start text-sm text-gray-500 sm:mt-0">
+                <div class="flex flex-wrap gap-1 justify-end">
+                  <ng-container *ngFor="let habilidad of cv.habilidades.split(',')">
+                    <span class="px-2 py-1 rounded-sm border-radius- bg-slate-100">{{ habilidad.trim() }}</span>
+                  </ng-container>
+                </div>
+                <p class="mt-1 self-end">Subido el {{ cv.createdAt | date:'dd/MM/yyyy' }}</p>
+                <p class="mt-1 self-end" [ngClass]="cv.verificado ? 'text-green-600' : 'text-red-600'">
+                  {{ cv.verificado ? 'Curriculum validado' : 'No validado por humano' }}
+                </p>
+              </div>
+            </div>
+            <!-- Botones de acción -->
+            <div class="mt-4 flex flex-wrap gap-2">
+              <!-- Botón de vista previa -->
+              <button
+                (click)="handlePreview(cv.id)"
+                class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <span class="mr-2"><ng-icon name="matRemoveRedEye" /></span>
+                Revisar
+              </button>
+              <!-- Botón de vista original -->
+              <button
+                (click)="handleViewOriginal(cv.s3_original_key)"
+                class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                <span class="mr-2"><ng-icon name="matArticle" /></span>
+                Ver Original
+              </button>
+              <!-- Botón de descarga -->
+              <button
+                (click)="handleDownload(cv.id)"
+                [disabled]="downloading[cv.id]"
+                class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              >
+                <span class="mr-2">
+                  <ng-icon name="matDownload" />
+                </span>
+                {{ downloading[cv.id] ? 'Descargando...' : 'Descargar' }}
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Agregar controles de paginación -->
+      <div *ngIf="filteredCVs.length > itemsPerPage" class="px-4 py-3 flex items-center justify-between border-t border-gray-200">
+        <div class="flex justify-center w-full gap-2">
+          <button
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            (click)="changePage(i + 1)"
+            [ngClass]="currentPage === i + 1 ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+            class="px-4 py-2 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Agregamos el componente Preview -->
+<app-preview
+  *ngIf="showPreview"
+  [cv]="selectedCV"
+  (onClose)="handleClosePreview()"
+  (onEdit)="handleEditCV($event)"
+  (onVerificationChange)="handleVerificationChange($event)"
+></app-preview>

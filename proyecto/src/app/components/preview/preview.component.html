@@ -1,0 +1,169 @@
+<div *ngIf="cv" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <!-- Notificación de éxito -->
+  <div *ngIf="showSuccessMessage" 
+       class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out flex items-center space-x-2 z-50">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span>¡Cambios guardados exitosamente!</span>
+  </div>
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col">
+    <!-- Encabezado del popup -->
+    <div class="flex justify-between items-center p-4 border-b">
+      <div class="flex flex-col">
+        <!-- Modo edición para el nombre -->
+        <div *ngIf="!isEditing">
+          <h2 class="text-2xl font-semibold">{{ cv.informacionPersonal.nombre }}</h2>
+          <p class="text-xl text-gray-500">{{ cv.resumen.anos_experiencia }} años de experiencia</p>
+        </div>
+        <div *ngIf="isEditing && editForm">
+          <input 
+            [(ngModel)]="editForm.informacionPersonal.nombre"
+            class="text-2xl font-semibold border rounded px-2 py-1 mb-1"
+          >
+          <input 
+            type="number"
+            [(ngModel)]="editForm.resumen.anos_experiencia"
+            class="text-xl text-gray-500 border rounded px-2 py-1"
+          >
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <!-- Botones de edición -->
+        <ng-container *ngIf="!isEditing">
+          <button (click)="toggleVerification()" class="p-2 rounded-full hover:bg-gray-100" [class.text-blue-500]="cv.verificado">
+            <ng-icon name="matVerified"></ng-icon>
+          </button>
+          <button (click)="startEditing()" class="p-2 rounded-full hover:bg-gray-100">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+            </svg>
+          </button>
+        </ng-container>
+        <!-- Botones de guardar/cancelar -->
+        <ng-container *ngIf="isEditing">
+          <button (click)="saveChanges()" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600">
+            Guardar
+          </button>
+          <button (click)="cancelEditing()" class="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+            Cancelar
+          </button>
+        </ng-container>
+        <!-- Botón de cerrar -->
+        <button (click)="onClose.emit()" class="p-2 rounded-full hover:bg-gray-100">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Área de desplazamiento -->
+    <div class="flex-grow overflow-y-auto">
+      <div class="p-6 space-y-6">
+       <!-- Resumen-->
+       <section>
+          <h3 class="text-xl font-semibold mb-2">RESUMEN</h3>
+          <ng-container *ngIf="!isEditing">
+            <p class="font-medium">{{ cv.resumen.texto }}</p>
+          </ng-container>
+          <ng-container *ngIf="isEditing && editForm">
+            <textarea
+              [(ngModel)]="editForm.resumen.texto"
+              class="w-full p-2 border rounded"
+              rows="4"
+            ></textarea>
+          </ng-container>
+      </section>
+        <hr class="my-4"> 
+       <!-- Formación -->
+       <section>
+          <h3 class="text-xl font-semibold mb-2">FORMACIÓN</h3>
+          <ng-container *ngIf="!isEditing">
+            <div *ngFor="let edu of cv.educacion" class="mb-2">
+              <p class="font-medium">{{ edu.titulo }}</p>
+              <p>{{ edu.institucion }}, {{ edu.fechaInicio }} - {{ edu.fechaFin }}</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isEditing && editForm">
+            <div *ngFor="let edu of editForm.educacion; let i = index" class="mb-2">
+              <input [(ngModel)]="edu.titulo" class="w-full p-2 border rounded mb-1" placeholder="Título">
+              <input [(ngModel)]="edu.institucion" class="w-full p-2 border rounded mb-1" placeholder="Institución">
+              <div class="flex gap-2">
+                <input [(ngModel)]="edu.fechaInicio" class="flex-1 p-2 border rounded" placeholder="Fecha inicio">
+                <input [(ngModel)]="edu.fechaFin" class="flex-1 p-2 border rounded" placeholder="Fecha fin">
+              </div>
+              <button (click)="editForm.educacion.splice(i, 1)" class="text-red-500 mt-1">Eliminar</button>
+            </div>
+            <button (click)="addEducation()" class="text-blue-500">+ Agregar formación</button>
+          </ng-container>
+      </section>
+        <hr class="my-4">
+      <!-- Experiencia laboral -->
+       <section>
+          <h3 class="text-xl font-semibold mb-2">EXPERIENCIA LABORAL</h3>
+          <ng-container *ngIf="!isEditing">
+            <div *ngFor="let work of cv.experienciaLaboral" class="mb-4">
+              <p class="font-medium">{{ work.puesto }}</p>
+              <p>{{ work.empresa }}, {{ work.fechaInicio }} - {{ work.fechaFin }}</p>
+              <p class="mt-2">{{ work.descripcion }}</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isEditing && editForm">
+            <div *ngFor="let work of editForm.experienciaLaboral; let i = index" class="mb-4">
+              <input [(ngModel)]="work.puesto" class="w-full p-2 border rounded mb-1" placeholder="Puesto">
+              <input [(ngModel)]="work.empresa" class="w-full p-2 border rounded mb-1" placeholder="Empresa">
+              <div class="flex gap-2 mb-1">
+                <input [(ngModel)]="work.fechaInicio" class="flex-1 p-2 border rounded" placeholder="Fecha inicio">
+                <input [(ngModel)]="work.fechaFin" class="flex-1 p-2 border rounded" placeholder="Fecha fin">
+              </div>
+              <textarea [(ngModel)]="work.descripcion" class="w-full p-2 border rounded" rows="3" placeholder="Descripción"></textarea>
+              <button (click)="editForm.experienciaLaboral.splice(i, 1)" class="text-red-500 mt-1">Eliminar</button>
+            </div>
+            <button (click)="addExperience()" class="text-blue-500">+ Agregar experiencia</button>
+          </ng-container>
+       </section>
+        <hr class="my-4">
+      <!-- Habilidades -->
+      <section>
+        <h3 class="text-xl font-semibold mb-2">CONOCIMIENTOS Y HERRAMIENTAS</h3>
+        <ng-container *ngIf="!isEditing">
+          <div class="flex flex-wrap gap-2">
+            <ng-container *ngFor="let habilidad of cv.habilidades.split(',')">
+              <span class="px-2 py-1 rounded-sm bg-slate-100">{{ habilidad.trim() }}</span>
+            </ng-container>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isEditing && editForm">
+          <textarea
+            [(ngModel)]="editForm.habilidades"
+            class="w-full p-2 border rounded"
+            rows="3"
+            placeholder="Ingrese las habilidades separadas por comas"
+          ></textarea>
+        </ng-container>
+      </section>
+      <hr class="my-4">
+      <!-- Certificaciones -->
+      <section>
+        <h3 class="text-xl font-semibold mb-2">CERTIFICACIONES Y CURSOS</h3>
+        <ng-container *ngIf="!isEditing">
+          <div *ngFor="let cert of cv.certificaciones" class="mb-2">
+            <p class="font-medium">{{ cert.nombre }}</p>
+            <p>{{ cert.emisor }}, {{ cert.fecha }}</p>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isEditing && editForm">
+          <div *ngFor="let cert of editForm.certificaciones; let i = index" class="mb-2">
+            <input [(ngModel)]="cert.nombre" class="w-full p-2 border rounded mb-1" placeholder="Nombre del certificado">
+            <div class="flex gap-2">
+              <input [(ngModel)]="cert.emisor" class="flex-1 p-2 border rounded" placeholder="Emisor">
+              <input [(ngModel)]="cert.fecha" class="flex-1 p-2 border rounded" placeholder="Fecha">
+            </div>
+            <button (click)="editForm.certificaciones.splice(i, 1)" class="text-red-500 mt-1">Eliminar</button>
+          </div>
+          <button (click)="addCertification()" class="text-blue-500">+ Agregar certificación</button>
+        </ng-container>
+      </section>
+    </div>
+  </div>
+</div>

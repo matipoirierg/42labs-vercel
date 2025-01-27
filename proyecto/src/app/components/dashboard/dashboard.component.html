@@ -1,0 +1,9 @@
+<div class="space-y-6">
+  <app-busqueda 
+    [allCVs]="cvs"
+    (searchResults)="handleSearchResults($event)">
+  </app-busqueda>
+  <div class="flex-grow">
+    <app-lista [cvs]="cvs" #lista></app-lista>
+  </div>
+</div>

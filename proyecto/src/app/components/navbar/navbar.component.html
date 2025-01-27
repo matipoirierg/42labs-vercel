@@ -1,0 +1,32 @@
+<nav class="bg-white shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <!-- Logo y enlace a la página principal -->
+          <div class="flex-shrink-0 flex items-center">
+            <a routerLink="/" class="text-xl font-bold text-gray-800">
+              42labs
+            </a>
+          </div>
+          <!-- Enlaces de navegación -->
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a
+              routerLink="/"
+              routerLinkActive="border-indigo-500 text-gray-900"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Dashboard
+            </a>
+            <a
+              routerLink="/upload"
+              routerLinkActive="border-indigo-500 text-gray-900"
+              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            >
+              Subir CV
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
