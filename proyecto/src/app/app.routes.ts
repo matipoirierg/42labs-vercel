@@ -11,6 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'always'
   }
 ];
