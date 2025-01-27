@@ -43,32 +43,19 @@ export class SubidaComponent {
     this.isProcessing = true;
     pendingFile.status = 'procesando';
 
-    try {
-      const fileContent = await this.fileToBase64(pendingFile.file);
-      const payload = {
-        fileContent,
-        mimeType: pendingFile.file.type
-      };
-
-      this.uploadService.uploadCV(payload).subscribe({
-        next: () => {
-          pendingFile.status = 'completado';
-          this.isProcessing = false;
-          this.processQueue(); // Procesar siguiente archivo
-        },
-        error: (error) => {
-          pendingFile.status = 'error';
-          pendingFile.error = error.error?.error || 'Error al procesar CV.';
-          this.isProcessing = false;
-          this.processQueue(); // Procesar siguiente archivo a pesar del error
-        }
-      });
-    } catch (error) {
-      pendingFile.status = 'error';
-      pendingFile.error = 'Error al preparar el archivo.';
-      this.isProcessing = false;
-      this.processQueue();
-    }
+    this.uploadService.uploadCV(pendingFile.file).subscribe({
+      next: () => {
+        pendingFile.status = 'completado';
+        this.isProcessing = false;
+        this.processQueue(); // Procesar siguiente archivo
+      },
+      error: (error) => {
+        pendingFile.status = 'error';
+        pendingFile.error = error.message || 'Error al subir el archivo.';
+        this.isProcessing = false;
+        this.processQueue();
+      }
+    });
   }
 
   private fileToBase64(file: File): Promise<string> {
